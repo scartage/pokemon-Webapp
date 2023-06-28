@@ -1,3 +1,5 @@
+
+
 .box{
     width: 250px;
     height: 250px;
@@ -5,7 +7,22 @@
 }
 
 #poketittle{
-    height: 50px;
-    width: 150px;
+    height: 90px;
+    width: 250px;
     margin: 8px;
 }
+
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 4 columnas */
+    grid-gap: 30px; /* Espacio entre los elementos */
+  }
+  
+  .grid-item {
+    /* Opcional: Ajusta el tamaño de las columnas según tus necesidades */
+    grid-column: span 1;
+  }.grid-item:hover {
+    transform: scale(1.1); /* Escala el elemento al 110% del tamaño original */
+    transition: transform 0.3s ease; /* Agrega una transición suave al efecto */
+  }
+  
