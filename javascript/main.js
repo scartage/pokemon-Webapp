@@ -21,6 +21,7 @@ const display = document.getElementById("nombre");
     }
  }*/
 function makingContainer(gridContainer, name, types) {
+    console.log(`esto llega a la funcion  ${name}, ${types}`);
     const gridItem = document.createElement('div');
     gridItem.className = 'grid-item';
     const boxCard = document.createElement('div');
@@ -72,14 +73,18 @@ function showPokemons(pokemonToShow, flag) {
             const gridContainer = document.createElement('div');
             gridContainer.className = 'grid-container';
             pokemonContainer.appendChild(gridContainer);
-            pokemonToShow.results.forEach((pokemon) => {
+            pokemonToShow.results.forEach((pokemon) => __awaiter(this, void 0, void 0, function* () {
+                console.log(pokemon.url);
                 const response = yield fetch(pokemon.url);
-                const pokemonData = yield responseesponse.json();
+                const pokemonData = yield response.json();
+                console.log(pokemonData);
                 const name = pokemonData.name;
-                const types = pokemonData.types;
-                makingContainer(gridContainer, name, types);
+                const types = pokemonData.types.map((typeData) => typeData.type.name).join(', ');
+                //const types: string = pokemonData.types.type.name;
                 console.log(`Nombre: ${name}, Tipo: ${types}`);
-            });
+                // makingContainer(gridContainer, name, types);
+                //console.log(`Nombre: ${name}, Tipo: ${types}`);
+            }));
         }
     });
 }

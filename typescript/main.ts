@@ -13,6 +13,7 @@ const display = document.getElementById("nombre");
  }*/
 
 function makingContainer(gridContainer, name, types){
+    console.log(`esto llega a la funcion  ${name}, ${types}`);
     const gridItem = document.createElement('div');
     gridItem.className = 'grid-item';
 
@@ -62,7 +63,7 @@ function displaySearch(pokemonContainer, pokemonToShow){
             })
     });*/
 
- async function showPokemons(pokemonToShow, flag: boolean){
+async function showPokemons(pokemonToShow, flag: boolean){
     const pokemonContainer = document.getElementById('pokemonContainer');
     if (flag == true){
         pokemonContainer.innerHTML = '';
@@ -72,15 +73,19 @@ function displaySearch(pokemonContainer, pokemonToShow){
         const gridContainer = document.createElement('div');
         gridContainer.className = 'grid-container';
         pokemonContainer.appendChild(gridContainer);
-        pokemonToShow.results.forEach((pokemon: any) => {
-
+        pokemonToShow.results.forEach(async (pokemon: any) => {
+            console.log(pokemon.url);
             const response = await fetch(pokemon.url);
-            const pokemonData = await responseesponse.json();
+            const pokemonData = await response.json();
+            
+            console.log(pokemonData);
 
             const name: string = pokemonData.name;
-            const types: string = pokemonData.types;
-            makingContainer(gridContainer, name, types);
+            const types = pokemonData.types.map((typeData) => typeData.type.name).join(', ');
+           //const types: string = pokemonData.types.type.name;
             console.log(`Nombre: ${name}, Tipo: ${types}`);
+           // makingContainer(gridContainer, name, types);
+            //console.log(`Nombre: ${name}, Tipo: ${types}`);
         });
     }
 }
