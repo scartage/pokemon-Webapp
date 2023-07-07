@@ -13,7 +13,7 @@ const display = document.getElementById("nombre");
  }*/
 
 function makingContainer(gridContainer, name, types){
-    console.log(`esto llega a la funcion  ${name}, ${types}`);
+    //console.log(name, types);
     const gridItem = document.createElement('div');
     gridItem.className = 'grid-item';
 
@@ -36,17 +36,8 @@ function makingContainer(gridContainer, name, types){
     gridItem.appendChild(boxCard);
 
     gridContainer.appendChild(gridItem);
-    console.log(pokemon.name);
+   // console.log(pokemon.name);
 }
-
-function displaySearch(pokemonContainer, pokemonToShow){
-    const gridContainer = document.createElement('div');
-    gridContainer.className = 'grid-container';
-    pokemonContainer.appendChild(gridContainer);
-    pokemonToShow.forEach((pokemon: any) => {
-        makingContainer(gridContainer, pokemon.name, hola);
-    });
- }
 
 
  /*pokemonToShow.forEach((pokemon: any) => {
@@ -62,41 +53,47 @@ function displaySearch(pokemonContainer, pokemonToShow){
                 console.log("Error al obtener la info");
             })
     });*/
+async function gettingAllData (pokemonToShow: object, gridContainer:object) {
+    for (const pokemon of pokemonToShow.results) {
+        const response = await fetch(pokemon.url);
+        const pokemonData = await response.json();
+
+        const name = pokemonData.name;
+        const types = pokemonData.types.map((typeData) => typeData.type.name).join(', ');
+        console.log(`Nombre: ${name}, Tipo: ${types}`);
+        makingContainer(gridContainer, name, types);
+    }
+}
+
+function displaySearch(pokemonContainer, pokemonToShow){
+    const gridContainer = document.createElement('div');
+    gridContainer.className = 'grid-container';
+    pokemonContainer.appendChild(gridContainer);
+    console.log(pokemonToShow);
+    //gettingAllData(pokemonToShow, gridContainer);
+    pokemonToShow.forEach((pokemon: any) => {
+        makingContainer(gridContainer, pokemon.name, pokemon.url);
+    });
+ }
 
 async function showPokemons(pokemonToShow, flag: boolean){
     const pokemonContainer = document.getElementById('pokemonContainer');
     if (flag == true){
         pokemonContainer.innerHTML = '';
-        console.log("limpiar html")
         displaySearch(pokemonContainer, pokemonToShow);
     }else{
         const gridContainer = document.createElement('div');
         gridContainer.className = 'grid-container';
         pokemonContainer.appendChild(gridContainer);
-        pokemonToShow.results.forEach(async (pokemon: any) => {
-            console.log(pokemon.url);
-            const response = await fetch(pokemon.url);
-            const pokemonData = await response.json();
-            
-            console.log(pokemonData);
-
-            const name: string = pokemonData.name;
-            const types = pokemonData.types.map((typeData) => typeData.type.name).join(', ');
-           //const types: string = pokemonData.types.type.name;
-            console.log(`Nombre: ${name}, Tipo: ${types}`);
-           // makingContainer(gridContainer, name, types);
-            //console.log(`Nombre: ${name}, Tipo: ${types}`);
-        });
+        gettingAllData(pokemonToShow, gridContainer);
     }
 }
 
 function checkFilter(data){
     const input = document.querySelector('input');
-    input.addEventListener('input', function(){
+    input.addEventListener('keyup', function(){
         const searchTerm = input.value.toLowerCase();
-        console.log(searchTerm);
         const filteredPokemon = data.results.filter(pokemon => pokemon.name.toLowerCase().includes(searchTerm));
-        console.log(filteredPokemon);
         showPokemons(filteredPokemon, true);
     });
  }
@@ -105,10 +102,8 @@ async function callAPI(){
     try{   
         const res = await fetch('https://pokeapi.co/api/v2/pokemon')
         data = await res.json()
-        console.log(data.results);
         showPokemons(data, false);
         checkFilter(data);
-        console.log("pepe");
         }catch(error){
             console.error(error);
     }
